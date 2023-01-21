@@ -21,15 +21,15 @@ status_text_lookup = {
     501: "Not Implemented",
 }
 
-status_lookup = {}
+status_code_lookup = {}
 for code, text in status_text_lookup.items():
-    status_lookup[text] = code    
+    status_code_lookup[text] = code    
 
 
 def send_first_line(status, writer):
     if type(status) == str:
         status_text = status
-        status = status_lookup[status_text]
+        status = status_code_lookup[status_text]
     else:
         status_text = status_text_lookup[status]
     
