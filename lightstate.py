@@ -43,8 +43,8 @@ class FadingLightState(LightState):
         
     def get_new_light_level(self):
         now = time.ticks_ms()
-        progress = time.ticks_diff(now, self.state.start_time) / time.ticks_diff(self.state.end_time, self.state.start_time)
-        level = self.state.start_level + progress * (self.state.end_level - self.state.start_level)
+        progress = time.ticks_diff(now, self.start_time) / time.ticks_diff(self.end_time, self.start_time)
+        level = self.start_level + progress * (self.end_level - self.start_level)
         return level
 
     def get_seconds_left(self):
@@ -52,7 +52,7 @@ class FadingLightState(LightState):
         return time.ticks_diff(self.end_time, now) // 1000
     
     def is_finished(self):
-        return self.seconds_left() < 0
+        return self.get_seconds_left() < 0
 
 
 class TimerLightState(LightState):
@@ -73,4 +73,4 @@ class TimerLightState(LightState):
         return time.ticks_diff(self.end_time, now) // 1000
     
     def is_finished(self):
-        return self.seconds_left() < 0
+        return self.get_seconds_left() < 0

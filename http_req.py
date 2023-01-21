@@ -45,3 +45,29 @@ async def read_headers(reader):
         key, val = split
         headers[key.strip()] = val.strip()
     return headers
+
+
+def parse_path(path):
+    if "#" in path:
+        path, fragment = path.split("#", 1)
+    else:
+        fragment = ""
+    if "?" in path:
+        path, args_str = path.split("?", 1)
+        if "&" in args_str:
+            args_strs = args_str.split("&")
+        else:
+            args_strs = [args_str]
+        args = {}
+        for arg in args_strs:
+            if "=" in arg:
+                key, val = arg.split("=", 1)
+                args[key] = val
+            else:
+                args[arg] = None            
+    else:
+        args = {}
+    return path, args, fragment
+    
+        
+        

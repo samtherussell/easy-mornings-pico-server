@@ -5,20 +5,21 @@ DUTY_MAX = 65536
 class LightController:
 
     def __init__(self):
-        self.pin = Pin(13)
-        self.pwm = PWM(self.pin)
-        
-    def get_level(self):
-        return self.pwm.duty_u16() / DUTY_MAX
-
-    def is_on(self):
-        return self.pwm.duty_u16() != 0
+        self.pin = Pin(13, mode=Pin.OUT)
+        self.level = 0
+        self.pin.value(self.level)
+        self.pwm = None
 
     def set_level(self, percentage):
-        if percentage == 1:
-            self.gpio.write(PIN, 1)
-        elif percentage == 0:
-            self.gpio.write(PIN, 0)
+        self.level = percentage
+        if percentage in [0, 1]:
+            if self.pwm is not None:
+                self.pwm = None
+                self.pin.init(Pin.OUT)
+            self.pin.value(percentage)
         else:
+            if self.pwm is None:
+                self.pin.init(Pin.ALT)
+                self.pwm = PWM(self.pin)
             value = 2 + round(percentage * percentage * (DUTY_MAX-1))
-            self.gpio.duty_u16(value)
+            self.pwm.duty_u16(value)

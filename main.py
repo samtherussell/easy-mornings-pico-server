@@ -13,6 +13,7 @@ def main():
         connect_to_wifi()
     except Exception as exc:
         print("could not connect to wifi:", exc)
+        return
         
     asyncio.run(async_main())
 

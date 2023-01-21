@@ -13,24 +13,24 @@ class LightManager:
         
     def get_status(self):
         return {
-            "level": self.light_controller.get_level(),
+            "level": self.light_controller.level,
             "state_type": self.state.state_type,
             "time_left": self.state.get_seconds_left(),
         }
 
     def constant(self, level: float):
         self.light_controller.set_level(level)
-        self.state = lightstate.ConstantLightState(level)
+        self.state = lightstate.ConstantLightState()
 
     def fade(self, period: int, level: float):
-        now_time = time.time_ms()
-        now_level = self.state.get_light_level()
-        then_time = now_time + period * 1000
+        now_time = time.ticks_ms()
+        now_level = self.light_controller.level
+        then_time = time.ticks_add(now_time, int(period * 1000))
         self.state = lightstate.FadingLightState(now_time, now_level, then_time, level)
 
     def timer(self, period: int, level: float):
-        now_time = time.time_ms()
-        then_time = now_time + period * 1000
+        now_time = time.ticks_ms()
+        then_time = time.ticks_add(now_time, int(period * 1000))
         self.state = lightstate.TimerLightState(then_time, level)
 
     async def run(self):
@@ -49,7 +49,8 @@ class LightManager:
         
         self.light_controller.set_level(level)
         if self.state.is_finished():
-            self.state = lightstate.ConstantLightState(level)
+            print("finished")
+            self.state = lightstate.ConstantLightState()
         return True
         
         
