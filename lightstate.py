@@ -44,6 +44,7 @@ class FadingLightState(LightState):
     def get_new_light_level(self):
         now = time.ticks_ms()
         progress = time.ticks_diff(now, self.start_time) / time.ticks_diff(self.end_time, self.start_time)
+        progress = round(progress, 2)
         level = self.start_level + progress * (self.end_level - self.start_level)
         return level
 
