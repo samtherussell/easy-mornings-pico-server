@@ -16,7 +16,7 @@ async def async_main():
     
     light_manager = LightManager()
     handler = EasyMorningHandler(light_manager)
-    asyncio.create_task(asyncio.start_server(handler.handle_connection, "0.0.0.0", 80))
+    asyncio.create_task(asyncio.start_server(handler.handle_connection, "0.0.0.0", 8080))
     await light_manager.run()
 
 
