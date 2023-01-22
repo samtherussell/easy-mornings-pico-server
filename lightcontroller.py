@@ -5,7 +5,7 @@ DUTY_MAX = 65536
 class LightController:
 
     def __init__(self):
-        self.pin = Pin(13, mode=Pin.OUT)
+        self.pin = Pin(28, mode=Pin.OUT)
         self.level = 0
         self.pin.value(self.level)
         self.pwm = None
