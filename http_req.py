@@ -7,7 +7,7 @@ HttpRequest = namedtuple("HttpRequest", ["method", "path", "headers", "content"]
 async def read_request(reader):
     method, path = await read_first_line(reader)
     headers = await read_headers(reader)
-    content_length = headers.get("Content-Length", 0)
+    content_length = int(headers.get("Content-Length", 0))
     content = await reader.readexactly(content_length)
     return HttpRequest(
         method=method,

@@ -14,7 +14,7 @@ class LightManager:
     def get_status(self):
         return {
             "level": self.light_controller.level,
-            "state_type": self.state.state_type,
+            "state": self.state.state_type,
             "time_left": self.state.get_seconds_left(),
         }
 
