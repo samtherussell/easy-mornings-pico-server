@@ -40,7 +40,6 @@ class LightManager:
 
     def run_timestep(self):
         level = self.state.get_new_light_level()
-        print(level)
         if level == "no change":
             return
         
