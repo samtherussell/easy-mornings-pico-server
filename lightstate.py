@@ -49,7 +49,7 @@ class FadingLightState(LightState):
 
     def get_seconds_left(self):
         now = time.ticks_ms()
-        return time.ticks_diff(self.end_time, now) // 1000
+        return time.ticks_diff(self.time, now) // 1000
     
     def is_finished(self):
         return self.get_seconds_left() < 0
