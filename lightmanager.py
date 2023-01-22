@@ -34,23 +34,18 @@ class LightManager:
         self.state = lightstate.TimerLightState(then_time, level)
 
     async def run(self):
-        sleep_time = 0.1
         while True:
-            await asyncio.sleep(sleep_time)
-            if self.run_timestep():
-                sleep_time = 0.1
-            else:
-                sleep_time = min(sleep_time * 2, 2)            
+            self.run_timestep()
+            await asyncio.sleep(0.1)
 
     def run_timestep(self):
         level = self.state.get_new_light_level()
+        print(level)
         if level == "no change":
-            return False
+            return
         
         self.light_controller.set_level(level)
         if self.state.is_finished():
             print("finished")
-            self.state = lightstate.ConstantLightState()
-        return True
-        
+            self.state = lightstate.ConstantLightState()        
         
