@@ -4,12 +4,15 @@ import http_req, http_resp
 
 class Handler:
     async def handle_connection(self, reader, writer):
-        while True:
-            try:
-                await self.handle_http_req(reader, writer)
-            except EOFError:
-                print("connection closed")
-                break
+        print("new connection")
+        try:
+            await self.handle_http_req(reader, writer)
+            writer.close()
+            print("connection closed")
+            await reader.wait_closed()
+            print("connection finished")
+        except EOFError:
+            print("eof")
 
     async def handle_http_req(self, reader, writer):
         request = await http_req.read_request(reader)
