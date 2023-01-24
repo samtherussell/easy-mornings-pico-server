@@ -16,11 +16,13 @@ class EasyMorningHandler(base_handler.Handler):
                 return self.get_status_response()
         elif request.method == "POST":
             if request.path.startswith("/now"):
-                return self.set_now(request.path)
+                return self.now(request.path)
             elif request.path.startswith("/fade"):
-                return self.set_fade(request.path)
+                return self.fade(request.path)
             elif request.path.startswith("/timer"):
-                return self.set_timer(request.path)
+                return self.timer(request.path)
+            elif request.path.startswith("/rave"):
+                return self.rave(request.path)
         
         return self.get_404_response()
     
@@ -28,24 +30,28 @@ class EasyMorningHandler(base_handler.Handler):
         status = self.light_manager.get_status()
         return self.get_json_response(status)
         
-    def set_now(self, path):
+    def now(self, path):
         path, args, fragment = http_req.parse_path(path)
         level = float(args["level"])
         self.light_manager.constant(level)
         return self.get_json_response({"success": True})
     
-    def set_fade(self, path):
+    def fade(self, path):
         path, args, fragment = http_req.parse_path(path)
         level = float(args["level"])
         period = float(args["seconds"])
         self.light_manager.fade(period, level)
         return self.get_json_response({"success": True})
     
-    def set_timer(self, path):
+    def timer(self, path):
         path, args, fragment = http_req.parse_path(path)
         level = float(args["level"])
         period = float(args["seconds"])
         self.light_manager.timer(period, level)
+        return self.get_json_response({"success": True})
+    
+    def rave(self, path):
+        self.light_manager.rave()
         return self.get_json_response({"success": True})
         
     def get_json_response(self, data):

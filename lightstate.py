@@ -3,6 +3,7 @@ import time
 LIGHT_STATE_CONSTANT = 'LIGHT_STATE_CONSTANT'
 LIGHT_STATE_FADING = 'LIGHT_STATE_FADING'
 LIGHT_STATE_TIMER = 'LIGHT_STATE_TIMER'
+LIGHT_STATE_RAVE = 'LIGHT_STATE_RAVE'
 
 
 class LightState:
@@ -80,3 +81,24 @@ class TimerLightState(LightState):
     
     def is_finished(self):
         return self.get_seconds_left() < 0
+    
+
+class RaveLightState(LightState):
+    
+    wavelength = 250
+    
+    def __init__(self):
+        super().__init__(LIGHT_STATE_RAVE)
+        
+    def get_new_light_level(self):
+        now = time.ticks_ms()
+        if now % self.wavelength < self.wavelength // 2:
+            return 1
+        else:
+            return 0
+
+    def get_seconds_left(self):
+        return -1
+    
+    def is_finished(self):
+        return False

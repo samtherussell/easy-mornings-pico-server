@@ -16,7 +16,7 @@ class LightManager:
             "level": self.light_controller.level,
             "state": self.state.state_type,
             "time_left": self.state.get_seconds_left(),
-        }
+        }    
 
     def constant(self, level: float):
         self.light_controller.set_level(level)
@@ -32,6 +32,9 @@ class LightManager:
         now_time = time.ticks_ms()
         then_time = time.ticks_add(now_time, int(period * 1000))
         self.state = lightstate.TimerLightState(then_time, level)
+        
+    def rave(self):
+        self.state = lightstate.RaveLightState()
 
     async def run(self):
         while True:
