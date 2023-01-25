@@ -1,6 +1,5 @@
 import time
 import uasyncio as asyncio
-from machine import RTC
 
 import lightstate
 import lightstatefactory
@@ -52,14 +51,8 @@ class LightManager:
             self.state = lightstate.ConstantLightState(level)
 
     def check_alarms(self):
-        datetime = RTC().datetime()
-        date_now = datetime[:3]
-        time_now = datetime[4:6]
-        day_now = datetime[3]
-        for alarm in self.alarms:
-            if alarm.triggered(time_now, date_now, day_now):
-                print("alarm triggered")
-                self.state = alarm.state_factory.create(
-                    time_now=time.ticks_ms(), level_now=self.light_controller.level
-                )
-                return
+        alarm = self.alarms.check_for_triggered()
+        if alarm is not None:
+            self.state = alarm.state_factory.create(
+                time_now=time.ticks_ms(), level_now=self.light_controller.level
+            )

@@ -58,3 +58,13 @@ class AlarmManager(list):
         current_data = alarm.to_dict()
         current_data.update(data)
         self[index] = Alarm.from_dict(current_data)
+
+    def check_for_triggered(self):
+        datetime = RTC().datetime()
+        date = datetime[:3]
+        time = datetime[4:6]
+        day = datetime[3]
+        for alarm in self:
+            if alarm.triggered(time, date, day):
+                print("alarm triggered")
+                return alarm
