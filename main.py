@@ -11,12 +11,14 @@ def main():
 
 
 async def async_main():
-    
-    await connect_to_wifi()    
-    
+
+    await connect_to_wifi()
+
     light_manager = LightManager()
     handler = EasyMorningHandler(light_manager)
-    asyncio.create_task(asyncio.start_server(handler.handle_connection, "0.0.0.0", 8080))
+    asyncio.create_task(
+        asyncio.start_server(handler.handle_connection, "0.0.0.0", 8080)
+    )
     await light_manager.run()
 
 

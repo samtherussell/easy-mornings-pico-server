@@ -1,11 +1,13 @@
 from collections import namedtuple
 
 
-HttpRequest = namedtuple("HttpRequest", ["method", "path", "headers", "content"])
+HttpRequest = namedtuple(
+    "HttpRequest", ["method", "path", "headers", "content", "args", "fragment"]
+)
 
 
 async def read_request(reader):
-    method, path = await read_first_line(reader)
+    method, path, args, fragment = await read_first_line(reader)
     headers = await read_headers(reader)
     content_length = int(headers.get("Content-Length", 0))
     content = await reader.readexactly(content_length)
@@ -14,6 +16,8 @@ async def read_request(reader):
         path=path,
         headers=headers,
         content=content,
+        args=args,
+        fragment=fragment,
     )
 
 
@@ -25,11 +29,14 @@ async def read_first_line(reader):
     if len(split) != 3:
         raise Exception(f"bad http request first line: {line}")
     method, path, version = split
-    if method not in ["GET", "POST"]:
+    if method not in ["GET", "POST", "DELETE"]:
         raise Exception(f"unsupported http request method: {method}")
     if version not in ["HTTP/1.1"]:
         raise Exception(f"unsupported http request version: {version}")
-    return method, path
+    path, args, fragment = parse_path(path)
+    if path.endswith("/"):
+        path = path[:-1]
+    return method, path, args, fragment
 
 
 async def read_headers(reader):
@@ -64,10 +71,7 @@ def parse_path(path):
                 key, val = arg.split("=", 1)
                 args[key] = val
             else:
-                args[arg] = None            
+                args[arg] = None
     else:
         args = {}
     return path, args, fragment
-    
-        
-        

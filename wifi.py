@@ -10,7 +10,7 @@ async def connect():
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     # turn off power saving mode off
-    wlan.config(pm = 0xa11140)
+    wlan.config(pm=0xA11140)
     wlan.connect(
         ssid=WIFI_SSID,
         key=WIFI_PASSWORD,
@@ -29,5 +29,5 @@ async def connect():
         elif wlan.status() == network.STAT_CONNECT_FAIL:
             raise Exception("CONNECT_FAIL")
         await asyncio.sleep(1)
-        
+
     raise Exception("TIMEOUT")

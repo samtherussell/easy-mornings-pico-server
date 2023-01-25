@@ -1,4 +1,4 @@
-import sys
+import sys, io
 import http_req, http_resp
 
 
@@ -16,16 +16,19 @@ class Handler:
 
     async def handle_http_req(self, reader, writer):
         request = await http_req.read_request(reader)
-        print(request.method, request.path)
+        print(request.method, request.path, request.args)
         try:
             response = self.get_response(request)
         except Exception as exc:
-            sys.print_exception(exc)
+            out = io.StringIO()
+            sys.print_exception(exc, out)
+            out = out.getvalue()
+            print(out)
             response = http_resp.HttpResponse(
                 status=500,
                 headers={},
-                content=b"",
-                )
+                content=out.encode(),
+            )
         print(response.status)
         http_resp.send_response(response, writer)
 

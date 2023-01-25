@@ -23,7 +23,7 @@ status_text_lookup = {
 
 status_code_lookup = {}
 for code, text in status_text_lookup.items():
-    status_code_lookup[text] = code    
+    status_code_lookup[text] = code
 
 
 def send_first_line(status, writer):
@@ -32,7 +32,7 @@ def send_first_line(status, writer):
         status = status_code_lookup[status_text]
     else:
         status_text = status_text_lookup[status]
-    
+
     line = f"HTTP/1.1 {status} {status_text}\r\n".encode()
     writer.write(line)
 
@@ -41,4 +41,4 @@ def send_headers(headers, writer):
     for key, value in headers.items():
         line = f"{key}: {value}\r\n".encode()
         writer.write(line)
-    writer.write(b"\r\n")    
+    writer.write(b"\r\n")
