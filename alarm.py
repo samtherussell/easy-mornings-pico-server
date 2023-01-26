@@ -9,10 +9,11 @@ class Alarm:
         self.time = time
         self.state_factory = state_factory
         self.repeat = repeat
-        if days is not None and len(days) != 7:
-            raise ValueError("days must be array of length 7")
-        if any(x not in (True, False) for x in days):
-            raise ValueError("days must be array of bools")
+        if days is not None:
+            if len(days) != 7:
+                raise ValueError("days must be array of length 7")
+            if any(x not in (True, False) for x in days):
+                raise ValueError("days must be array of bools")
         self.days = days
         now = RTC().datetime()
         date_today = now[:3]
