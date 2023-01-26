@@ -4,10 +4,15 @@ import lightstatefactory
 
 
 class Alarm:
-    def __init__(self, time, state_factory, repeat, days):
+    def __init__(self, enabled, time, state_factory, repeat, days):
+        self.enabled = enabled
         self.time = time
         self.state_factory = state_factory
         self.repeat = repeat
+        if days is not None and len(days) != 7:
+            raise ValueError("days must be array of length 7")
+        if any(x not in (True, False) for x in days):
+            raise ValueError("days must be array of bools")
         self.days = days
         now = RTC().datetime()
         date_today = now[:3]
@@ -15,16 +20,21 @@ class Alarm:
         self.last_triggered = None if time_now < self.time else date_today
 
     def triggered(self, time, date, day):
+        if not self.enabled:
+            return False
+
         if self.time > time:
             return False
 
-        if self.days is not None and self.days[day] == 0:
+        if self.days is not None and not self.days[day]:
             return False
 
         if self.last_triggered is not None and self.last_triggered >= date:
             return False
 
         self.last_triggered = date
+        if not self.repeat:
+            self.enabled = False
         return True
 
     def to_dict(self):
@@ -38,10 +48,11 @@ class Alarm:
     @classmethod
     def from_dict(cls, data):
         return cls(
-            tuple(data["time"]),
-            lightstatefactory.from_dict(data["state"]),
-            data.get("repeat", False),
-            data.get("days", None),
+            enabled=data.get("enabled", True),
+            time=tuple(data["time"]),
+            state_factory=lightstatefactory.from_dict(data["state"]),
+            repeat=data.get("repeat", False),
+            days=data.get("days", None),
         )
 
 
